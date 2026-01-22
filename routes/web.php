@@ -4,11 +4,17 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('index');
+    return auth()->check()
+        ? redirect()->route('chat')
+        : redirect()->route('login');
 });
 
+Route::get('/chat', function () {
+    return view('index');
+})->middleware('auth')->name('chat');
+
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('chat', request()->query());
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
